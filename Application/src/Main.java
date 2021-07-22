@@ -1,4 +1,12 @@
+import CharacterSheetMgmt.Character;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
+
+// TODO refactor
+// TODO force user input type
 
 public class Main {
 
@@ -48,6 +56,128 @@ public class Main {
         System.out.println("Type out one of the following backgrounds...");
         printBackgroundOptions();
         newChar.setBackground(scan.nextLine());
+
+        System.out.println("Would you like to roll for stats or use predetermined stats?");
+        System.out.println("Type 1 or 2 respectively...");
+        System.out.println("1. Roll for stats");
+        System.out.println("2. Predetermine stats");
+        int statInput = scan.nextInt();
+        if (statInput == 1) {
+            getRolledStats(newChar);
+        }
+        else if (statInput == 2) {
+            assignStats(newChar);
+        }
+    }
+
+    private static void assignStats(Character character) {
+        System.out.println("Choose each of these following numbers to one of your abilities...");
+        ArrayList<Integer> scores = new ArrayList<>(Arrays.asList(15, 14, 13, 12, 10, 8));
+        ArrayList<String> abilities = new ArrayList<>(Arrays.asList("Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"));
+        Scanner scan = new Scanner(System.in);
+
+        for (int i = 0; i < abilities.size(); i++) {
+            System.out.println("Type out which score to apply to " + abilities.get(i));
+            for (int score : scores) {
+                System.out.println(score + "  ");
+            }
+            int input = scan.nextInt();
+            int modifier;
+            if (scores.contains(input)) {
+                switch (i) {
+                    case 0 -> {
+                        character.setStrength(input);
+                        modifier = character.calcModifier(input);
+                        character.setStrengthMod(modifier);
+                    }
+                    case 1 -> {
+                        character.setDexterity(input);
+                        modifier = character.calcModifier(input);
+                        character.setDexterityMod(modifier);
+                    }
+                    case 2 -> {
+                        character.setConstitution(input);
+                        modifier = character.calcModifier(input);
+                        character.setCharismaMod(modifier);
+                    }
+                    case 3 -> {
+                        character.setIntelligence(input);
+                        modifier = character.calcModifier(input);
+                        character.setIntelligenceMod(modifier);
+                    }
+                    case 4 -> {
+                        character.setWisdom(input);
+                        modifier = character.calcModifier(input);
+                        character.setWisdomMod(modifier);
+                    }
+                    case 5 -> {
+                        character.setCharisma(input);
+                        modifier = character.calcModifier(input);
+                        character.setCharismaMod(modifier);
+                    }
+                }
+                scores.remove(i);
+            }
+        }
+    }
+
+    private static void getRolledStats(Character character) {
+        System.out.println("Rolling for stats...");
+        //Roll for Str score and set modifier
+        int score = rollStats();
+        character.setStrength(score);
+        int modifier = character.calcModifier(score);
+        character.setStrengthMod(modifier);
+
+        //Roll for Dex score and set modifier
+        score = rollStats();
+        character.setDexterity(score);
+        modifier = character.calcModifier(score);
+        character.setDexterityMod(modifier);
+
+        //Roll for Const score and set modifier
+        score = rollStats();
+        character.setConstitution(score);
+        modifier = character.calcModifier(score);
+        character.setConstitutionMod(modifier);
+
+        //Roll for Int score and set modifier
+        score = rollStats();
+        character.setIntelligence(score);
+        modifier = character.calcModifier(score);
+        character.setIntelligenceMod(modifier);
+
+        //Roll for Wis score and set modifier
+        score = rollStats();
+        character.setWisdom(score);
+        modifier = character.calcModifier(score);
+        character.setWisdomMod(modifier);
+
+        //Roll for Char score and set modifier
+        score = rollStats();
+        character.setCharisma(score);
+        modifier = character.calcModifier(score);
+        character.setCharismaMod(modifier);
+    }
+
+    public static int rollStats() {
+        ArrayList<Integer> rolls = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            rolls.add(rollD6());
+        }
+        //remove smallest rolls
+        Collections.sort(rolls);
+        rolls.remove(3);
+        //sum highest 3 rolls
+        int sum = 0;
+        for (int roll : rolls) {
+            sum = sum + roll;
+        }
+        return sum;
+    }
+
+    private static int rollD6() {
+        return (int)(Math.random()*6 + 1);
     }
 
     private static void printBackgroundOptions() {

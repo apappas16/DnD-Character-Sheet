@@ -1,3 +1,5 @@
+package CharacterSheetMgmt;
+
 import java.util.ArrayList;
 
 public class Character {
@@ -51,12 +53,20 @@ public class Character {
     }
 
     // methods
+    /**
+     * Takes the stat score and calculates its modifier
+     *
+     * @param score stat score (strength, dex, const, ...)
+     * @return the modifier applied to the stat score (+1, -1, +2...)
+     */
+    public int calcModifier(int score) {
+        return (score - 10) / 2;
+    }
+
     public String toString() {
         String charData = "";
         return charData;
     }
-
-
 
     // getters and setters
     public String getName() {
