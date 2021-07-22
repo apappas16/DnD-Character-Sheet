@@ -68,6 +68,9 @@ public class Main {
         else if (statInput == 2) {
             assignStats(newChar);
         }
+
+        System.out.println("Here's your character so far:");
+        System.out.println(newChar);
     }
 
     private static void assignStats(Character character) {
@@ -79,44 +82,44 @@ public class Main {
         for (int i = 0; i < abilities.size(); i++) {
             System.out.println("Type out which score to apply to " + abilities.get(i));
             for (int score : scores) {
-                System.out.println(score + "  ");
+                System.out.print(score + "  ");
             }
             int input = scan.nextInt();
             int modifier;
             if (scores.contains(input)) {
                 switch (i) {
-                    case 0 -> {
+                    case 0:
                         character.setStrength(input);
                         modifier = character.calcModifier(input);
                         character.setStrengthMod(modifier);
-                    }
-                    case 1 -> {
+                        break;
+                    case 1:
                         character.setDexterity(input);
                         modifier = character.calcModifier(input);
                         character.setDexterityMod(modifier);
-                    }
-                    case 2 -> {
+                        break;
+                    case 2:
                         character.setConstitution(input);
                         modifier = character.calcModifier(input);
                         character.setCharismaMod(modifier);
-                    }
-                    case 3 -> {
+                        break;
+                    case 3:
                         character.setIntelligence(input);
                         modifier = character.calcModifier(input);
                         character.setIntelligenceMod(modifier);
-                    }
-                    case 4 -> {
+                        break;
+                    case 4:
                         character.setWisdom(input);
                         modifier = character.calcModifier(input);
                         character.setWisdomMod(modifier);
-                    }
-                    case 5 -> {
+                        break;
+                    case 5:
                         character.setCharisma(input);
                         modifier = character.calcModifier(input);
                         character.setCharismaMod(modifier);
-                    }
+                        break;
                 }
-                scores.remove(i);
+                scores.remove(scores.indexOf(input));
             }
         }
     }
@@ -167,7 +170,7 @@ public class Main {
         }
         //remove smallest rolls
         Collections.sort(rolls);
-        rolls.remove(3);
+        rolls.remove(0);
         //sum highest 3 rolls
         int sum = 0;
         for (int roll : rolls) {

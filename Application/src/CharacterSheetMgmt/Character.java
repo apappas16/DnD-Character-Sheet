@@ -64,7 +64,16 @@ public class Character {
     }
 
     public String toString() {
-        String charData = "";
+        String charData = "\nName: " + name;
+        charData += "\nClass: " + charClass;
+        charData += "\nRace: " + race;
+        charData += "\nBackground: " + background;
+        charData += "\n\nAbilities:\nStrength: " + strength + "\t" + strengthMod;
+        charData += "\nDexterity: " + dexterity + "\t" + dexterityMod;
+        charData += "\nConstitution: " + constitution + "\t" + constitutionMod;
+        charData += "\nIntelligence: " + intelligence + "\t" + intelligenceMod;
+        charData += "\nWisdom: " + wisdom + "\t" + wisdomMod;
+        charData += "\nCharisma: " + charisma + "\t" + charismaMod;
         return charData;
     }
 
