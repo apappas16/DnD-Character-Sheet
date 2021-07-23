@@ -60,7 +60,10 @@ public class Character {
      * @return the modifier applied to the stat score (+1, -1, +2...)
      */
     public int calcModifier(int score) {
-        return (score - 10) / 2;
+        if (score < 10 && score % 2 != 0)
+            return ((score - 10) / 2) - 1;
+        else
+            return (score - 10) / 2;
     }
 
     public String toString() {
