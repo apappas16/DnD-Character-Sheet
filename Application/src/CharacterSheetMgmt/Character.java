@@ -1,6 +1,11 @@
 package CharacterSheetMgmt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+import Main.Main;
+
+import Main.Database;
 
 public class Character {
     // instance variables
@@ -36,12 +41,20 @@ public class Character {
     private int deathSaveFail;
     private ArrayList<String> inventory;
     private ArrayList<Feature> features;
+    private ArrayList<String> savingThrows;
+
+    private final String MARTIAL_MELEE_WEAPONS = "martial_melee_weapons";
+    private final String MARTIAL_RANGED_WEAPONS = "martial_ranged_weapons";
+    private final String SIMPLE_MELEE_WEAPONS = "simple_melee_weapons";
+    private final String SIMPLE_RANGED_WEAPONS = "simple_ranged_weapons";
+
     // TODO hit die
     // TODO flaws, bonds, ideals, traits
     // TODO character description (age, height, weight, etc)
     // TODO spells
+    // TODO implement weight with inventory?
 
-    // constructor
+    // constructors
     public Character() {
         level = 1;
         deathSaveFail = 0;
@@ -50,9 +63,90 @@ public class Character {
         otherProfsLangs = new ArrayList<>();
         skills = new ArrayList<>();
         inventory = new ArrayList<>();
+        profBonus = 2;
     }
 
-    // methods
+    public Character(String name, String race, String charClass, String background) {
+        this.name = name;
+        this.race = race;
+        this.charClass = charClass;
+        this.background = background;
+        configureCharRace(race);
+        configureCharClass(charClass);
+        level = 1;
+        deathSaveFail = 0;
+        deathSaveSucc = 0;
+        equipment = new ArrayList<>();
+        otherProfsLangs = new ArrayList<>();
+        skills = new ArrayList<>();
+        inventory = new ArrayList<>();
+        profBonus = 2;
+    }
+
+    // METHODS
+
+    private void configureCharRace(String race) {
+        switch (race) {
+
+        }
+    }
+
+    public void configureCharClass(String charClass) {
+        Scanner scan = new Scanner(System.in);
+        charClass = charClass.toUpperCase();
+        switch (charClass) {
+            case "BARBARIAN":
+                maxHP = 12 + constitutionMod;
+                // level up hp 1d12 (or 7) + const mod
+                otherProfsLangs.add("Light Armor");
+                otherProfsLangs.add("Medium Armor");
+                otherProfsLangs.add("Shields");
+                otherProfsLangs.add("Simple Weapons");
+                otherProfsLangs.add("Martial Weapons");
+                savingThrows.add("Strength");
+                savingThrows.add("Constitution");
+                System.out.println("Choose two of the following skills as proficiencies (type out 'skill1, skill2'");
+                System.out.println("Animal Handling, Athletics, Intimidation, Nature, Perception, Survival");
+                String input = scan.nextLine();
+                skills.addAll(Arrays.asList(input.split(", ")));
+                System.out.println("Choose one of the following martial melee weapons:");
+                System.out.println("(Type out the name of the weapon you want 'Greataxe')");
+                System.out.println(Database.retrieveFromWeaponsTable(MARTIAL_MELEE_WEAPONS));
+                input = scan.nextLine();
+                Weapon wpn = new Weapon(input);
+                System.out.println("The following weapon was created:");
+                System.out.println(wpn);
+
+
+                // TODO ADD HIT DIE HERE (1d12 per level)
+                break;
+            case "BARD":
+
+                break;
+            case "CLERIC":
+
+                break;
+            case "DRUID":
+                break;
+            case "FIGHTER":
+                break;
+            case "MONK":
+                break;
+            case "PALADIN":
+                break;
+            case "RANGER":
+                break;
+            case "ROGUE":
+                break;
+            case "SORCERER":
+                break;
+            case "WARLOCK":
+                break;
+            case "WIZARD":
+                break;
+        }
+    }
+
     /**
      * Takes the stat score and calculates its modifier
      *

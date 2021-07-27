@@ -1,5 +1,6 @@
 package TestCases;
 import CharacterSheetMgmt.Character;
+import Main.Database;
 
 public class CharacterTestCase {
     public static void main(String[] args) {
@@ -9,5 +10,14 @@ public class CharacterTestCase {
             mod = testChar.calcModifier(i);
             System.out.println(i + ": " + mod);
         }
+        // System.out.println(Database.retrieveFromWeaponsTable("martial_melee_weapons"));
+
+        String testStr = "1d87";
+        String[] newStr = testStr.split("d");
+        System.out.println(newStr[0]);
+        System.out.println(newStr[1]);
+
+        testChar.configureCharClass("Barbarian");
+        System.out.println(testChar);
     }
 }

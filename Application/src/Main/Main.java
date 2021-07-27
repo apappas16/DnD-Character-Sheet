@@ -1,3 +1,5 @@
+package Main;
+
 import CharacterSheetMgmt.Character;
 
 import java.util.ArrayList;
@@ -6,9 +8,15 @@ import java.util.Collections;
 import java.util.Scanner;
 
 // TODO refactor
-// TODO force user input type
+// TODO force user input type everywhere
+// TODO add inspiration?
+// TODO configure db to be accessed remotely?
+// TODO configure db tables into CSV files??
 
 public class Main {
+
+    public final static String dbURL = "jdbc:mysql://localhost:3306/dnd_db";
+    public final static String dbUser = "reg_user";
 
     public static void main(String[] args) {
         boolean nextMenu = false;
@@ -33,29 +41,28 @@ public class Main {
     }
 
     private static void createCharacter() {
-        // TODO force user input to be correct
-        Character newChar = new Character();
         Scanner scan = new Scanner(System.in);
         System.out.println("What is yours character's name?");
-        newChar.setName(scan.nextLine());
+        String name = scan.nextLine();
 
         // TODO classify the races?
         System.out.println("What is your character's race?");
         System.out.println("Type out one of the following races...");
         printRaceOptions();
-        newChar.setRace(scan.nextLine());
+        String race = scan.nextLine();
 
         // TODO classify the classes?
         System.out.println("What is your character's class?");
         System.out.println("Type out one of the following classes...");
         printClassOptions();
-        newChar.setCharClass(scan.nextLine());
+        String charClass = scan.nextLine();
 
-        // TODO classify the backgrounds?
         System.out.println("What is your character's background?");
         System.out.println("Type out one of the following backgrounds...");
         printBackgroundOptions();
-        newChar.setBackground(scan.nextLine());
+        String background = scan.nextLine();
+
+        Character newChar = new Character(name, race, charClass, background);
 
         System.out.println("Would you like to roll for stats or use predetermined stats?");
         System.out.println("Type 1 or 2 respectively...");
@@ -68,6 +75,8 @@ public class Main {
         else if (statInput == 2) {
             assignStats(newChar);
         }
+
+
 
         System.out.println("Here's your character so far:");
         System.out.println(newChar);
