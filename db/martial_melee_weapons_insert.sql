@@ -32,4 +32,4 @@ insert into martial_melee_weapons values('War pick', '5gp', '1d8', 'piercing', 2
 
 insert into martial_melee_weapons values('Warhammer', '15gp', '1d8', 'bludgeoning', 2, 'Versatile (1d10)');
 
-insert into martial_melee_weapons values('Whip', '2', '1d4', 'slashing', 3, 'Finesse, reach');
+insert into martial_melee_weapons values('Whip', '2gp', '1d4', 'slashing', 3, 'Finesse, reach');

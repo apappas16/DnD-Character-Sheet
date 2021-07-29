@@ -1,23 +1,21 @@
 package TestCases;
 import CharacterSheetMgmt.Character;
+import CharacterSheetMgmt.Equipment;
 import Main.Database;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class CharacterTestCase {
-    public static void main(String[] args) {
-        Character testChar = new Character();
-        int mod;
-        for (int i = 3; i < 21; i++) {
-            mod = testChar.calcModifier(i);
-            System.out.println(i + ": " + mod);
-        }
-        // System.out.println(Database.retrieveFromWeaponsTable("martial_melee_weapons"));
-
-        String testStr = "1d87";
-        String[] newStr = testStr.split("d");
-        System.out.println(newStr[0]);
-        System.out.println(newStr[1]);
-
-        testChar.configureCharClass("Barbarian");
-        System.out.println(testChar);
+    public static void main(String[] args) throws SQLException {
+        Character testChar = new Character("Alex", "Human", "Fighter", "Acolyte");
+        ArrayList<String> inventory = new ArrayList<>(Arrays.asList("50 gold", "silver sword", "ballsack"));
+        Equipment pack = new Equipment("Burglar's Pack");
+        Equipment eq = new Equipment("Spyglass", "5gp", 3, 1, "Used to see better a long distance");
+        ArrayList<Equipment> equipment = new ArrayList<>(Arrays.asList(pack, eq));
+        testChar.setInventory(inventory);
+        testChar.setEquipment(equipment);
+        testChar.printAllItems();
     }
 }

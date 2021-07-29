@@ -13,15 +13,17 @@ public class Weapon extends Equipment {
     private int dieForDmg; // 8 in 1d8 dmg
     private String damageType;
     private ArrayList<String> properties;
-    //private String weaponType; //Simple melee, martial melee, etc
 
     //constructors
     public Weapon(String name) {
+        // TODO fix checking if ResultSet query worked;
         this.name = name;
         quantity = 1;
-        ResultSet resultSet = Database.queryDB("SELECT * FROM weapons WHERE name='" + name + "'");
+        properties = new ArrayList<>();
+        ResultSet resultSet = Database.queryDB("SELECT * FROM weapons WHERE name='" + name + "';");
         try {
-            if (resultSet != null) {
+            //resultSet.next();
+            if (resultSet.next()) {
                 // set dmg variables (e.g. 1d8)
                 String dmgRoll = resultSet.getString("dmgRoll");
                 String[] splitDmgRoll = dmgRoll.split("d");
@@ -48,10 +50,13 @@ public class Weapon extends Equipment {
 
     //methods
     public String toString() {
-        String result = "Name: " + name + "\n";
-        result += "Damage: " + rollsForDmg + "d" + dieForDmg + "\n";
-        result += "Damage Type: " + damageType + "\n";
-        result += "Properties: " + properties + "\n";
+        String result = "\nName: " + name;
+        result += "\nDamage: " + rollsForDmg + "d" + dieForDmg;
+        result += "\nDamage Type: " + damageType;
+        result += "\nProperties: " + properties;
+        result += "\nCost: " + cost;
+        result += "\nWeight: " + weight;
+        result += "\nQuantity: " + quantity;
         return result;
     }
 

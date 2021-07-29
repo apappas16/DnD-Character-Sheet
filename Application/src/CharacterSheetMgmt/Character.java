@@ -1,11 +1,15 @@
 package CharacterSheetMgmt;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import Main.Main;
 
 import Main.Database;
+
+import javax.xml.transform.Result;
 
 public class Character {
     // instance variables
@@ -43,16 +47,15 @@ public class Character {
     private ArrayList<Feature> features;
     private ArrayList<String> savingThrows;
 
-    private final String MARTIAL_MELEE_WEAPONS = "martial_melee_weapons";
-    private final String MARTIAL_RANGED_WEAPONS = "martial_ranged_weapons";
-    private final String SIMPLE_MELEE_WEAPONS = "simple_melee_weapons";
-    private final String SIMPLE_RANGED_WEAPONS = "simple_ranged_weapons";
+    private final String MARTIAL_MELEE_TABLE = "martial_melee_weapons";
+    private final String MARTIAL_RANGED_TABLE = "martial_ranged_weapons";
+    private final String SIMPLE_MELEE_TABLE = "simple_melee_weapons";
+    private final String SIMPLE_RANGED_TABLE = "simple_ranged_weapons";
 
     // TODO hit die
     // TODO flaws, bonds, ideals, traits
     // TODO character description (age, height, weight, etc)
     // TODO spells
-    // TODO implement weight with inventory?
 
     // constructors
     public Character() {
@@ -71,8 +74,6 @@ public class Character {
         this.race = race;
         this.charClass = charClass;
         this.background = background;
-        configureCharRace(race);
-        configureCharClass(charClass);
         level = 1;
         deathSaveFail = 0;
         deathSaveSucc = 0;
@@ -80,7 +81,12 @@ public class Character {
         otherProfsLangs = new ArrayList<>();
         skills = new ArrayList<>();
         inventory = new ArrayList<>();
+        savingThrows = new ArrayList<>();
+        features = new ArrayList<>();
+        inventory = new ArrayList<>();
         profBonus = 2;
+        configureCharRace(race);
+        configureCharClass(charClass);
     }
 
     // METHODS
@@ -105,19 +111,56 @@ public class Character {
                 otherProfsLangs.add("Martial Weapons");
                 savingThrows.add("Strength");
                 savingThrows.add("Constitution");
-                System.out.println("Choose two of the following skills as proficiencies (type out 'skill1, skill2'");
+                System.out.println("Choose two of the following skills as proficiencies (type out 'skill1, skill2')");
                 System.out.println("Animal Handling, Athletics, Intimidation, Nature, Perception, Survival");
                 String input = scan.nextLine();
                 skills.addAll(Arrays.asList(input.split(", ")));
                 System.out.println("Choose one of the following martial melee weapons:");
                 System.out.println("(Type out the name of the weapon you want 'Greataxe')");
-                System.out.println(Database.retrieveFromWeaponsTable(MARTIAL_MELEE_WEAPONS));
+                System.out.println("Loading weapons...");
+                System.out.println(Database.retrieveFromWeaponsTable(MARTIAL_MELEE_TABLE));
                 input = scan.nextLine();
                 Weapon wpn = new Weapon(input);
-                System.out.println("The following weapon was created:");
-                System.out.println(wpn);
-
-
+                equipment.add(wpn);
+                String handaxeData = "";
+                StringBuilder simpleWeapons = new StringBuilder();
+                try {
+                    ResultSet resultSet = Database.queryDB("SELECT * FROM weapons WHERE name='handaxe'");
+                    while (resultSet.next()) {
+                        handaxeData = resultSet.getString("cost") + ", " + resultSet.getString("dmgRoll") + " " + resultSet.getString("dmgType") + ", " + resultSet.getString("properties");
+                    }
+                    System.out.println("Choose your second weapon:");
+                    System.out.println("Type out the name of the choice as its shown (e.g. '2 Handaxes')");
+                    System.out.println("2 Handaxes - " + handaxeData);
+                    String querySimpleWeapons = "SELECT * FROM simple_melee_weapons WHERE NOT name='Handaxe'";
+                    resultSet = Database.queryDB(querySimpleWeapons);
+                    while (resultSet.next()) {
+                        simpleWeapons.append(resultSet.getString("name")).append(" - ").append(resultSet.getString("cost")).append(", ").append(resultSet.getString("dmgRoll")).append(" ").append(resultSet.getString("dmgType")).append(", ").append(resultSet.getString("properties")).append("\n");
+                    }
+                    querySimpleWeapons = "SELECT * FROM simple_ranged_weapons";
+                    resultSet = Database.queryDB(querySimpleWeapons);
+                    while (resultSet.next()) {
+                        simpleWeapons.append(resultSet.getString("name")).append(" - ").append(resultSet.getString("cost")).append(", ").append(resultSet.getString("dmgRoll")).append(" ").append(resultSet.getString("dmgType")).append(", ").append(resultSet.getString("properties")).append("\n");
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(simpleWeapons);
+                input = scan.nextLine();
+                if (input.equals("2 Handaxes")) {
+                    Weapon handaxes = new Weapon("Handaxe");
+                    handaxes.setQuantity(2);
+                    equipment.add(handaxes);
+                } else {
+                    Weapon simpleWpn = new Weapon(input);
+                    equipment.add(simpleWpn);
+                }
+                System.out.println("Adding explorer's pack and 4 javelins...");
+                Equipment explorersPack = new Equipment("Explorer's Pack");
+                equipment.add(explorersPack);
+                Weapon javelin = new Weapon("Javelin");
+                javelin.setQuantity(4);
+                equipment.add(javelin);
                 // TODO ADD HIT DIE HERE (1d12 per level)
                 break;
             case "BARD":
@@ -171,7 +214,22 @@ public class Character {
         charData += "\nIntelligence: " + intelligence + "\t" + intelligenceMod;
         charData += "\nWisdom: " + wisdom + "\t" + wisdomMod;
         charData += "\nCharisma: " + charisma + "\t" + charismaMod;
+        charData += "\nLanguages & Proficiencies: " + otherProfsLangs;
+        charData += "\nSaving Throws: " + savingThrows;
+        charData += "\nSkills: " + skills;
+        charData += "\nEquipment: " + equipment;
         return charData;
+    }
+
+    public void printAllItems() {
+        System.out.println("Equipment:");
+        for (Equipment eq : equipment) {
+            System.out.println(eq + "\n");
+        }
+        System.out.println("\nOther Items:");
+        for (String item : inventory) {
+            System.out.println(item);
+        }
     }
 
     // getters and setters

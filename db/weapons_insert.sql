@@ -60,7 +60,7 @@ insert into weapons values('War pick', '5gp', '1d8', 'piercing', 2, '--');
 
 insert into weapons values('Warhammer', '15gp', '1d8', 'bludgeoning', 2, 'Versatile (1d10)');
 
-insert into weapons values('Whip', '2', '1d4', 'slashing', 3, 'Finesse, reach');
+insert into weapons values('Whip', '2gp', '1d4', 'slashing', 3, 'Finesse, reach');
 
 insert into weapons values('Blowgun', '10gp', '1', 'piercing', 1, 'Ammunition, range - 25/100, loading');
 
