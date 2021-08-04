@@ -9,8 +9,6 @@ import Main.Main;
 
 import Main.Database;
 
-import javax.xml.transform.Result;
-
 public class Character {
     // instance variables
     private String name;
@@ -34,28 +32,37 @@ public class Character {
     private int charisma;
     private int charismaMod;
     private int profBonus;
-    private int ac;
+    private int totalAC;
     private int speed;
     private int gold;
     private int passPerception;
-    private ArrayList<Equipment> equipment;
-    private ArrayList<String> otherProfsLangs;
-    private ArrayList<String> skills;
     private int deathSaveSucc;
     private int deathSaveFail;
+    private int passivePerception;
+    private ArrayList<String> skills;
+    private String hitDie;
+    private ArrayList<Equipment> equipment;
+    private ArrayList<String> otherProfsLangs;
     private ArrayList<String> inventory;
     private ArrayList<Feature> features;
     private ArrayList<String> savingThrows;
 
-    private final String MARTIAL_MELEE_TABLE = "martial_melee_weapons";
-    private final String MARTIAL_RANGED_TABLE = "martial_ranged_weapons";
-    private final String SIMPLE_MELEE_TABLE = "simple_melee_weapons";
-    private final String SIMPLE_RANGED_TABLE = "simple_ranged_weapons";
+    //Use these for querying weapons table for specific weapon type:
+    private final String MARTIAL_MELEE = "martial_melee";
+    private final String MARTIAL_RANGED = "martial_ranged";
+    private final String SIMPLE_MELEE = "simple_melee";
+    private final String SIMPLE_RANGED = "simple_ranged";
+    private final String SIMPLE = "simple";
+    private final String MARTIAL = "martial";
 
-    // TODO hit die
     // TODO flaws, bonds, ideals, traits
     // TODO character description (age, height, weight, etc)
     // TODO spells
+    // TODO character level up
+    // TODO keep track of variables specific to characters and their features?
+    // TODO add different feature paths when leveling up
+    // TODO refactor how user sees character creation (print out what they start with)
+
 
     // constructors
     public Character() {
@@ -87,6 +94,10 @@ public class Character {
         profBonus = 2;
         configureCharRace(race);
         configureCharClass(charClass);
+        if (skills.contains("Perception"))
+            passivePerception = 10 + profBonus + wisdomMod;
+        else
+            passivePerception = 10 + wisdomMod;
     }
 
     // METHODS
@@ -104,11 +115,8 @@ public class Character {
             case "BARBARIAN":
                 maxHP = 12 + constitutionMod;
                 // level up hp 1d12 (or 7) + const mod
-                otherProfsLangs.add("Light Armor");
-                otherProfsLangs.add("Medium Armor");
-                otherProfsLangs.add("Shields");
-                otherProfsLangs.add("Simple Weapons");
-                otherProfsLangs.add("Martial Weapons");
+                hitDie = level + "d12";
+                otherProfsLangs.addAll(Arrays.asList("Light Armor", "Medium Armor", "Shields", "Simple Weapons", "Martial Weapons"));
                 savingThrows.add("Strength");
                 savingThrows.add("Constitution");
                 System.out.println("Choose two of the following skills as proficiencies (type out 'skill1, skill2')");
@@ -118,7 +126,7 @@ public class Character {
                 System.out.println("Choose one of the following martial melee weapons:");
                 System.out.println("(Type out the name of the weapon you want 'Greataxe')");
                 System.out.println("Loading weapons...");
-                System.out.println(Database.retrieveFromWeaponsTable(MARTIAL_MELEE_TABLE));
+                System.out.println(Database.retrieveWeaponsByType(MARTIAL_MELEE));
                 input = scan.nextLine();
                 Weapon wpn = new Weapon(input);
                 equipment.add(wpn);
@@ -132,15 +140,10 @@ public class Character {
                     System.out.println("Choose your second weapon:");
                     System.out.println("Type out the name of the choice as its shown (e.g. '2 Handaxes')");
                     System.out.println("2 Handaxes - " + handaxeData);
-                    String querySimpleWeapons = "SELECT * FROM simple_melee_weapons WHERE NOT name='Handaxe'";
-                    resultSet = Database.queryDB(querySimpleWeapons);
+                    String query = "SELECT * FROM weapons WHERE type LIKE '%" + SIMPLE + "%' AND NOT name='Handaxe'";
+                    resultSet = Database.queryDB(query);
                     while (resultSet.next()) {
-                        simpleWeapons.append(resultSet.getString("name")).append(" - ").append(resultSet.getString("cost")).append(", ").append(resultSet.getString("dmgRoll")).append(" ").append(resultSet.getString("dmgType")).append(", ").append(resultSet.getString("properties")).append("\n");
-                    }
-                    querySimpleWeapons = "SELECT * FROM simple_ranged_weapons";
-                    resultSet = Database.queryDB(querySimpleWeapons);
-                    while (resultSet.next()) {
-                        simpleWeapons.append(resultSet.getString("name")).append(" - ").append(resultSet.getString("cost")).append(", ").append(resultSet.getString("dmgRoll")).append(" ").append(resultSet.getString("dmgType")).append(", ").append(resultSet.getString("properties")).append("\n");
+                        simpleWeapons.append(resultSet.getString("name")).append(" - ").append(resultSet.getString("cost")).append(", ").append(resultSet.getString("dmgRoll")).append(" ").append(resultSet.getString("dmgType")).append(", ").append(resultSet.getString("type")).append(", ").append(resultSet.getString("properties")).append("\n");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -161,9 +164,49 @@ public class Character {
                 Weapon javelin = new Weapon("Javelin");
                 javelin.setQuantity(4);
                 equipment.add(javelin);
-                // TODO ADD HIT DIE HERE (1d12 per level)
+                System.out.println("Adding Rage and Unarmored Defense features...");
+                String desc = Database.retrieveFeatureDesc("Rage");
+                Feature rage = new Feature("Rage", desc);
+                desc = Database.retrieveFeatureDesc("Unarmored Defense");
+                Feature unarmoredDefense = new Feature("Unarmored Defense", desc);
+                features.add(rage);
+                features.add(unarmoredDefense);
+                gold = Main.rollDie(2,4) * 10;
+                System.out.println("Your starting gold is: " + gold);
                 break;
             case "BARD":
+                maxHP = 8 + constitutionMod;
+                //level up hp 1d8 (or 5) + const mod
+                hitDie = level + "d8";
+                otherProfsLangs.addAll(Arrays.asList("Light Armor", "Simple Weapons", "Hand Crossbows", "Longswords", "Rapiers", "Shortswords"));
+                savingThrows.add("Dexterity");
+                savingThrows.add("Charisma");
+                System.out.println("Choose any three instruments to be proficient in");
+                System.out.println("Type out the instruments separated by commas (\"Viol, Lute, Flute\"");
+                Main.printAllInstruments();
+                input = scan.nextLine();
+                otherProfsLangs.addAll(Arrays.asList(input.split(", ")));
+                System.out.println("Choose any three skills to be proficient in");
+                System.out.println("Type out the skills separated by commas (\"Athletics, Survival, Intimidation\")");
+                Main.printAllSkills();
+                input = scan.nextLine();
+                skills.addAll(Arrays.asList(input.split(", ")));
+                System.out.println("Choose a starting weapon from this list:");
+                System.out.println("Type out the weapon name as you see it\n");
+                System.out.print(Database.retrieveWeaponsByName("Rapier"));
+                System.out.print(Database.retrieveWeaponsByName("Longsword"));
+                System.out.println(Database.retrieveWeaponsByType(SIMPLE));
+                input = scan.nextLine();
+                wpn = new Weapon(input);
+                equipment.add(wpn);
+                System.out.println("Choose between the following 2 packs:\nDiplomat's Pack\nEntertainer's Pack");
+                input = scan.nextLine();
+                Equipment pack = new Equipment(input);
+                equipment.add(pack);
+                System.out.println("Choose a musical instrument:");
+                Main.printAllInstruments();
+                input = scan.nextLine();
+                inventory.add(input);
 
                 break;
             case "CLERIC":
@@ -203,6 +246,11 @@ public class Character {
             return (score - 10) / 2;
     }
 
+    public int calcAC() {
+        return 0;
+    }
+
+    // TODO refactor to get each item thats in a list
     public String toString() {
         String charData = "\nName: " + name;
         charData += "\nClass: " + charClass;
@@ -265,8 +313,8 @@ public class Character {
         return constitution;
     }
 
-    public int getAc() {
-        return ac;
+    public int getTotalAC() {
+        return totalAC;
     }
 
     public int getCharisma() {
@@ -317,6 +365,10 @@ public class Character {
         return wisdom;
     }
 
+    public String getHitDie() {
+        return hitDie;
+    }
+
     public int getGold() {
         return gold;
     }
@@ -327,6 +379,10 @@ public class Character {
 
     public int getWisdomMod() {
         return wisdomMod;
+    }
+
+    public ArrayList<String> getSavingThrows() {
+        return savingThrows;
     }
 
     public int getDeathSaveFail() {
@@ -365,8 +421,8 @@ public class Character {
         this.alignment = alignment;
     }
 
-    public void setAc(int ac) {
-        this.ac = ac;
+    public void setTotalAC(int totalAC) {
+        this.totalAC = totalAC;
     }
 
     public void setBackground(String background) {
@@ -459,6 +515,14 @@ public class Character {
 
     public void setDeathSaveFail(int deathSaveFail) {
         this.deathSaveFail = deathSaveFail;
+    }
+
+    public void setSavingThrows(ArrayList<String> savingThrows) {
+        this.savingThrows = savingThrows;
+    }
+
+    public void setHitDie(String hitDie) {
+        this.hitDie = hitDie;
     }
 
     public void setStrengthMod(int strengthMod) {

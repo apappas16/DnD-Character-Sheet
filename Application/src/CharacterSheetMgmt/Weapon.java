@@ -14,9 +14,11 @@ public class Weapon extends Equipment {
     private String damageType;
     private ArrayList<String> properties;
 
+    // TODO refactor class constructor
+    // TODO fix checking if query worked;
+
     //constructors
     public Weapon(String name) {
-        // TODO fix checking if ResultSet query worked;
         this.name = name;
         quantity = 1;
         properties = new ArrayList<>();
@@ -50,13 +52,13 @@ public class Weapon extends Equipment {
 
     //methods
     public String toString() {
-        String result = "\nName: " + name;
-        result += "\nDamage: " + rollsForDmg + "d" + dieForDmg;
-        result += "\nDamage Type: " + damageType;
-        result += "\nProperties: " + properties;
-        result += "\nCost: " + cost;
-        result += "\nWeight: " + weight;
-        result += "\nQuantity: " + quantity;
+        String result = name.toUpperCase();
+        result += "\n\tDamage: " + rollsForDmg + "d" + dieForDmg;
+        result += "\n\tDamage Type: " + damageType;
+        result += "\n\tProperties: " + properties;
+        result += "\n\tCost: " + cost;
+        result += "\n\tWeight: " + weight;
+        result += "\n\tQuantity: " + quantity;
         return result;
     }
 

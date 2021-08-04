@@ -2,7 +2,9 @@ package TestCases;
 import CharacterSheetMgmt.Character;
 import CharacterSheetMgmt.Equipment;
 import Main.Database;
+import Main.Main;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,5 +19,16 @@ public class CharacterTestCase {
         testChar.setInventory(inventory);
         testChar.setEquipment(equipment);
         testChar.printAllItems();
+
+        //Main.printInstrumentsMenu();
+
+        System.out.println("Choose a starting weapon from this list:");
+        System.out.println("Type out the weapon name as you see it\n");
+        System.out.println(Database.retrieveWeaponsByName("Rapier"));
+        System.out.println(Database.retrieveWeaponsByName("Longsword"));
+        System.out.println(Database.retrieveWeaponsByType("simple"));
+
+        ArrayList<String> testList = Database.retrieveWeaponsByName("Greatsword");
+        System.out.println(testList);
     }
 }

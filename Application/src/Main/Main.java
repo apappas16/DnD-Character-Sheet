@@ -12,6 +12,53 @@ import java.util.Scanner;
 // TODO add inspiration?
 // TODO configure db to be accessed remotely?
 // TODO configure db tables into CSV files??
+// TODO add class or methods to display everything nicely to user
+
+/*Character creation
+1. Choose race
+2. Choose class
+3. Choose background
+4. Stat block
+    1. ability scores
+    2. ability modifiers
+    3. proficiency modifier
+    4. saving throws
+    5. skill scores
+    6. passive perception
+5. Proficiencies and languages
+    1. proficiencies (class)
+    2. languages (race and background)
+6. Equipment
+    1. list all equipment, weapons, armor, personal items
+    2. money
+7. Attacks and Spellcasting
+    1. physical weapon names
+    2. attack modifiers
+    3. damage
+    4. special actions
+8. HP and combat stats
+    1. AC
+    2. Initiative
+    3. Speed
+    4. Hit Dice
+    5. Max HP
+    6. Current HP
+    7. Temporary HP - leave blank
+    8. Death Saves
+9. Features
+    1. List all remaining features of class, race, background
+    2. Add any additional skills, passive benefits, or relevant bonuses
+10. Traits - Roll or decide yourself
+    1. Personality Traits
+    2. Ideals
+    3. Bonds
+    4. Flaws
+11. Name and remaining info
+    1. Name
+    2. Level
+    3. Player Name
+    4. Alignment
+*/
 
 public class Main {
 
@@ -175,7 +222,7 @@ public class Main {
     public static int rollStats() {
         ArrayList<Integer> rolls = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            rolls.add(rollD6());
+            rolls.add(rollDie(6));
         }
         //remove smallest rolls
         Collections.sort(rolls);
@@ -188,8 +235,17 @@ public class Main {
         return sum;
     }
 
-    private static int rollD6() {
-        return (int)(Math.random()*6 + 1);
+    public static int rollDie(int diceType) {
+        return (int)(Math.random()*diceType + 1);
+    }
+
+    public static int rollDie(int numRolls, int diceType) {
+        int rollSum = 0;
+        while (numRolls != 0) {
+            rollSum += (int)(Math.random() * diceType + 1);
+            numRolls--;
+        }
+        return rollSum;
     }
 
     private static void printBackgroundOptions() {
@@ -248,5 +304,41 @@ public class Main {
     private static void printStartMenu() {
         System.out.println("1. Create new character");
         System.out.println("2. Load existing character");
+    }
+
+    public static void printAllInstruments() {
+        System.out.println("\n\nInstruments: ");
+        System.out.println("- Bagpipes \t 30gp \t 6lb");
+        System.out.println("- Drum \t 6gp \t 3lb");
+        System.out.println("- Dulcimer\t 25gp \t 10lb");
+        System.out.println("- Flute\t 2gp \t 1lb");
+        System.out.println("- Lute\t 35gp \t 2lb");
+        System.out.println("- Lyre\t 30gp \t 2lb");
+        System.out.println("- Horn\t 3gp \t 2lb");
+        System.out.println("- Pan Flute\t 12gp \t 2lb");
+        System.out.println("- Shawm\t 2gp \t 1lb");
+        System.out.println("- Viol\t 30gp \t 1lb");
+    }
+
+    public static void printAllSkills() {
+        System.out.println("\n\nSkills:");
+        System.out.println("Acrobatics (Dex)");
+        System.out.println("Animal Handling (Wis)");
+        System.out.println("Arcana (Int)");
+        System.out.println("Athletics (Str)");
+        System.out.println("Deception (Cha)");
+        System.out.println("History (Int)");
+        System.out.println("Insight (Wis)");
+        System.out.println("Intimidation (Cha)");
+        System.out.println("Investigation (Int)");
+        System.out.println("Medicine (Wis)");
+        System.out.println("Nature (Int)");
+        System.out.println("Perception (Wis)");
+        System.out.println("Performance (Cha)");
+        System.out.println("Persuasion (Cha)");
+        System.out.println("Religion (Int)");
+        System.out.println("Sleight of Hand (Dex)");
+        System.out.println("Stealth (Dex)");
+        System.out.println("Survival (Wis)");
     }
 }
