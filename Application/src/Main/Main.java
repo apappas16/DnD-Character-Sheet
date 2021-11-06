@@ -8,57 +8,11 @@ import java.util.Collections;
 import java.util.Scanner;
 
 // TODO refactor
-// TODO force user input type everywhere
+// TODO user input type validation
 // TODO add inspiration?
 // TODO configure db to be accessed remotely?
 // TODO configure db tables into CSV files??
 // TODO add class or methods to display everything nicely to user
-
-/*Character creation
-1. Choose race
-2. Choose class
-3. Choose background
-4. Stat block
-    1. ability scores
-    2. ability modifiers
-    3. proficiency modifier
-    4. saving throws
-    5. skill scores
-    6. passive perception
-5. Proficiencies and languages
-    1. proficiencies (class)
-    2. languages (race and background)
-6. Equipment
-    1. list all equipment, weapons, armor, personal items
-    2. money
-7. Attacks and Spellcasting
-    1. physical weapon names
-    2. attack modifiers
-    3. damage
-    4. special actions
-8. HP and combat stats
-    1. AC
-    2. Initiative
-    3. Speed
-    4. Hit Dice
-    5. Max HP
-    6. Current HP
-    7. Temporary HP - leave blank
-    8. Death Saves
-9. Features
-    1. List all remaining features of class, race, background
-    2. Add any additional skills, passive benefits, or relevant bonuses
-10. Traits - Roll or decide yourself
-    1. Personality Traits
-    2. Ideals
-    3. Bonds
-    4. Flaws
-11. Name and remaining info
-    1. Name
-    2. Level
-    3. Player Name
-    4. Alignment
-*/
 
 public class Main {
 
@@ -89,150 +43,30 @@ public class Main {
 
     private static void createCharacter() {
         Scanner scan = new Scanner(System.in);
-        System.out.println("What is yours character's name?");
-        String name = scan.nextLine();
+        //System.out.println("What is yours character's name?");
+        //String name = scan.nextLine();
 
-        // TODO classify the races?
-        System.out.println("What is your character's race?");
-        System.out.println("Type out one of the following races...");
+        System.out.println("Choose a race?");
+        System.out.println("Type out one of the following races below");
         printRaceOptions();
         String race = scan.nextLine();
 
-        // TODO classify the classes?
-        System.out.println("What is your character's class?");
-        System.out.println("Type out one of the following classes...");
+        System.out.println("Choose a class?");
+        System.out.println("Type out one of the following classes below");
         printClassOptions();
         String charClass = scan.nextLine();
 
-        System.out.println("What is your character's background?");
-        System.out.println("Type out one of the following backgrounds...");
+        System.out.println("Choose a background for your character");
+        System.out.println("Type out one of the following backgrounds below");
         printBackgroundOptions();
         String background = scan.nextLine();
 
-        Character newChar = new Character(name, race, charClass, background);
-
-        System.out.println("Would you like to roll for stats or use predetermined stats?");
-        System.out.println("Type 1 or 2 respectively...");
-        System.out.println("1. Roll for stats");
-        System.out.println("2. Predetermine stats");
-        int statInput = scan.nextInt();
-        if (statInput == 1) {
-            getRolledStats(newChar);
-        }
-        else if (statInput == 2) {
-            assignStats(newChar);
-        }
+        Character newChar = new Character(race, charClass, background);
 
 
 
         System.out.println("Here's your character so far:");
         System.out.println(newChar);
-    }
-
-    private static void assignStats(Character character) {
-        System.out.println("Choose each of these following numbers to one of your abilities...");
-        ArrayList<Integer> scores = new ArrayList<>(Arrays.asList(15, 14, 13, 12, 10, 8));
-        ArrayList<String> abilities = new ArrayList<>(Arrays.asList("Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"));
-        Scanner scan = new Scanner(System.in);
-
-        for (int i = 0; i < abilities.size(); i++) {
-            System.out.println("Type out which score to apply to " + abilities.get(i));
-            for (int score : scores) {
-                System.out.print(score + "  ");
-            }
-            int input = scan.nextInt();
-            int modifier;
-            if (scores.contains(input)) {
-                switch (i) {
-                    case 0:
-                        character.setStrength(input);
-                        modifier = character.calcModifier(input);
-                        character.setStrengthMod(modifier);
-                        break;
-                    case 1:
-                        character.setDexterity(input);
-                        modifier = character.calcModifier(input);
-                        character.setDexterityMod(modifier);
-                        break;
-                    case 2:
-                        character.setConstitution(input);
-                        modifier = character.calcModifier(input);
-                        character.setCharismaMod(modifier);
-                        break;
-                    case 3:
-                        character.setIntelligence(input);
-                        modifier = character.calcModifier(input);
-                        character.setIntelligenceMod(modifier);
-                        break;
-                    case 4:
-                        character.setWisdom(input);
-                        modifier = character.calcModifier(input);
-                        character.setWisdomMod(modifier);
-                        break;
-                    case 5:
-                        character.setCharisma(input);
-                        modifier = character.calcModifier(input);
-                        character.setCharismaMod(modifier);
-                        break;
-                }
-                scores.remove(scores.indexOf(input));
-            }
-        }
-    }
-
-    private static void getRolledStats(Character character) {
-        System.out.println("Rolling for stats...");
-        //Roll for Str score and set modifier
-        int score = rollStats();
-        character.setStrength(score);
-        int modifier = character.calcModifier(score);
-        character.setStrengthMod(modifier);
-
-        //Roll for Dex score and set modifier
-        score = rollStats();
-        character.setDexterity(score);
-        modifier = character.calcModifier(score);
-        character.setDexterityMod(modifier);
-
-        //Roll for Const score and set modifier
-        score = rollStats();
-        character.setConstitution(score);
-        modifier = character.calcModifier(score);
-        character.setConstitutionMod(modifier);
-
-        //Roll for Int score and set modifier
-        score = rollStats();
-        character.setIntelligence(score);
-        modifier = character.calcModifier(score);
-        character.setIntelligenceMod(modifier);
-
-        //Roll for Wis score and set modifier
-        score = rollStats();
-        character.setWisdom(score);
-        modifier = character.calcModifier(score);
-        character.setWisdomMod(modifier);
-
-        //Roll for Char score and set modifier
-        score = rollStats();
-        character.setCharisma(score);
-        modifier = character.calcModifier(score);
-        character.setCharismaMod(modifier);
-    }
-
-    public static int rollStats() {
-        ArrayList<Integer> rolls = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            rolls.add(rollDie(6));
-        }
-        //remove smallest rolls
-        Collections.sort(rolls);
-        rolls.remove(0);
-        //sum highest 3 rolls
-        int sum = 0;
-        for (int roll : rolls) {
-            sum = sum + roll;
-        }
-        return sum;
     }
 
     public static int rollDie(int diceType) {
@@ -307,7 +141,7 @@ public class Main {
     }
 
     public static void printAllInstruments() {
-        System.out.println("\n\nInstruments: ");
+        System.out.println("\n\nInstruments:");
         System.out.println("- Bagpipes \t 30gp \t 6lb");
         System.out.println("- Drum \t 6gp \t 3lb");
         System.out.println("- Dulcimer\t 25gp \t 10lb");
@@ -340,5 +174,46 @@ public class Main {
         System.out.println("Sleight of Hand (Dex)");
         System.out.println("Stealth (Dex)");
         System.out.println("Survival (Wis)");
+    }
+
+    public static void displayList(ArrayList<String> list) {
+        System.out.print("- ");
+        for (String item : list) {
+            System.out.print(item + "\t");
+        }
+        System.out.println("");
+    }
+
+    public static void display2DList(ArrayList<ArrayList<String>> list) {
+        for (ArrayList<String> row : list) {
+            System.out.print("- ");
+            for (String col : row) {
+                System.out.print(col + "\t");
+            }
+            System.out.println("");
+        }
+    }
+
+    public static void printArtisanTools() {
+        System.out.println("\n\nArtisan Tools:");
+        System.out.println("- Alchemist's supplies \t 50gp \t 8lb");
+        System.out.println("- Brewer's supplies \t 20gp \t 9lb");
+        System.out.println("- Calligrapher's supplies \t 10gp \t 5lb");
+        System.out.println("- Carpenter's supplies \t 8gp \t 6lb");
+        System.out.println("- Cartographer's supplies \t 15gp \t 6lb");
+        System.out.println("- Cobbler's tools \t 5gp \t 5lb");
+        System.out.println("- Cook's utensils \t 1gp \t 8lb");
+        System.out.println("- Glassblower's tools \t 30gp \t 5lb");
+        System.out.println("- Jewler's tools \t 25gp \t 2lb");
+        System.out.println("- Leatherworker's tools \t 5gp \t 5lb");
+        System.out.println("- Mason's tools \t 10gp \t 8lb");
+        System.out.println("- Navigator's tools \t 25gp \t 2lb");
+        System.out.println("- Painter's supplies \t 10gp \t 5lb");
+        System.out.println("- Potter's tools \t 10gp \t 3lb");
+        System.out.println("- Smith's tools \t 20gp \t 8lb");
+        System.out.println("- Thieves' tools \t 25gp \t 1lb");
+        System.out.println("- Tinker's tools \t 50gp \t 10lb");
+        System.out.println("- Weaver's tools \t 1gp \t 5lb");
+        System.out.println("- Woodcarver's tools \t 1gp \t 5lb");
     }
 }
